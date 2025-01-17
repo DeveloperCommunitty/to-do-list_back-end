@@ -6,3 +6,63 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String
+  name      String
+  role      Role       @default(USER)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  Task      Task[]
+  Playlist  Playlist[]
+  Restore   Restore[]
+
+  @@map("users")
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  playlistId  String?
+  playlist    Playlist? @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  description String
+  done        Boolean   @default(false)
+  title       String
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("tasks")
+}
+
+model Playlist {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  Task        Task[]
+
+  @@map("playlists")
+}
+
+model Restore {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token        String
+  used         Boolean  @default(false)
+  createdAt    DateTime @default(now()) @map("created_at")
+  expirationAt DateTime @updatedAt @map("updated_at")
+
+  @@map("restores")
+}
