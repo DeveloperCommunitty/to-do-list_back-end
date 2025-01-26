@@ -30,6 +30,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('Tarefas')
     .addTag('Usuários')
+    .addTag('Playlist')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
