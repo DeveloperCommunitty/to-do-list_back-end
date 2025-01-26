@@ -17,3 +17,4 @@ export class CreateTaskDto {
     @ApiProperty({ description: 'Controle para tarefas concluídas' })
     done?: boolean
 }
+

@@ -29,6 +29,7 @@ async function bootstrap() {
         '- [José Vítor](https://www.linkedin.com/in/jv-270492312/)\n\n',)
     .setVersion('1.0')
     .addTag('Tarefas')
+    .addTag('Playlist')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
