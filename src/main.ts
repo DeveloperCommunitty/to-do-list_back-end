@@ -28,6 +28,7 @@ async function bootstrap() {
         '- [Victor Daniel](https://www.linkedin.com/in/victor-daniel-santos-cardoso-ab0787344/)\n' +
         '- [José Vítor](https://www.linkedin.com/in/jv-270492312/)\n\n',)
     .setVersion('1.0')
+    .addTag('Tarefas')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
