@@ -26,10 +26,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^8.1.1",
     "@prisma/client": "^6.2.1",
-<<<<<<< HEAD
-=======
     "@types/bcryptjs": "^2.4.6",
->>>>>>> f646054a27cf3ecb5817a31d8872c59e2ffa2060
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",

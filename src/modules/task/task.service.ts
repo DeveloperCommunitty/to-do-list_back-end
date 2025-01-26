@@ -11,7 +11,8 @@ export class TaskService {
       where: {
         id: body.userId
       }
-    })  
+    });
+    
     if(!usrCheck) throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
 
     const task = await this.prisma.task.create({

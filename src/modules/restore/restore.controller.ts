@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { NewPassword, PasswordRedefinition, TokenConfirmed } from './dto/restoreDto';
 import { RestoreService } from './restore.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Restauração') 
 @Controller('restore')
 export class RestoreController {
     constructor(private readonly restoreService: RestoreService){}

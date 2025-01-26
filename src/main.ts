@@ -31,6 +31,7 @@ async function bootstrap() {
     .addTag('Tarefas')
     .addTag('Usuários')
     .addTag('Playlist')
+    .addTag('Restauração')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
