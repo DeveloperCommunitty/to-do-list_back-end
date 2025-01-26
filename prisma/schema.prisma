@@ -62,7 +62,7 @@ model Restore {
   token        String
   used         Boolean  @default(false)
   createdAt    DateTime @default(now()) @map("created_at")
-  expirationAt DateTime @updatedAt @map("updated_at")
+  expirationAt DateTime @map("updated_at")
 
   @@map("restores")
 }
