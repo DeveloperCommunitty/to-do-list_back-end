@@ -57,6 +57,17 @@ export class TaskController {
   updateDone(@Param('id') id: string){
     return this.taskService.updateDone(id)
   }
+
+  @Put('/playlist/:id')
+  @ApiResponse({ status: 200, description: 'Tarefa adicionada na playlist com sucesso'})
+  @ApiResponse({ status: 400, description: 'Erro ao adicionar tarefa na playlist'})
+  @ApiResponse({ status: 404, description: 'Tarefa não encontrada'})
+  @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
+  @ApiOperation({ summary: 'Adicionar tarefa na playlist' })
+  addTaskInPlaylist(@Param('id') id: string, @Body() body: CreateTaskDto){
+    return this.taskService.addTaskinPlaylist(id, body)
+  }
+
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'Tarefa atualizada com sucesso'})
   @ApiResponse({ status: 400, description: 'Erro ao deletar tarefa'})

@@ -16,17 +16,16 @@ export class TaskService {
 
     const task = await this.prisma.task.create({
       data: {
-        title: body.title, 
-        description: body.description, 
-        userId: body.userId
+        ...body
       }, 
     })
 
-    if(!task) throw new HttpException('Erro ao criar produto', HttpStatus.BAD_REQUEST)
+    if(!task) throw new HttpException('Erro ao criar tarefa', HttpStatus.BAD_REQUEST)
 
     return task;
   }
 
+  
   async findAll() {
     const tasks = await this.prisma.task.findMany({
       select: {
@@ -36,15 +35,15 @@ export class TaskService {
         done: true
       }
     })
-
-    if(!tasks) throw new HttpException('Erro ao criar produto', HttpStatus.BAD_REQUEST)
-  
-    return tasks;
-  }
-
-  async findOne(id: string) {
     
-    const task = await this.prisma.task.findUnique({
+    if(!tasks) throw new HttpException('Erro ao listar tarefas', HttpStatus.BAD_REQUEST)
+      
+      return tasks;
+    }
+    
+    async findOne(id: string) {
+      
+      const task = await this.prisma.task.findUnique({
       where: {id}, 
       select: {
         id: true, 
@@ -53,17 +52,17 @@ export class TaskService {
         done: true
       }
     })
-
+    
     if(!task) throw new HttpException('Tarefa não encontrada', HttpStatus.NOT_FOUND)
-
-    return task;
-  }
-
-  async update(id: string, body: CreateTaskDto) {
-    const findTask = await this.prisma.task.findUnique({where: {id}})
+      
+      return task;
+    }
+    
+    async update(id: string, body: CreateTaskDto) {
+      const findTask = await this.prisma.task.findUnique({where: {id}})
     if(!findTask) throw new HttpException('Tarefa não encontrada', HttpStatus.NOT_FOUND)
-
-    const updateTask = await this.prisma.task.update({
+      
+      const updateTask = await this.prisma.task.update({
       where: {id}, 
       data: {
         title: body.title, 
@@ -76,17 +75,17 @@ export class TaskService {
         done: true
       }
     })
-
+    
     if(!updateTask) throw new HttpException('Erro ao atualizar tarefa', HttpStatus.BAD_REQUEST)
-
-    return updateTask;
-  }
+      
+      return updateTask;
+    }
 
   async updateDone(id: string){
     const findTask = await this.prisma.task.findUnique({where: {id}})
     if(!findTask) throw new HttpException('Tarefa não encontrada', HttpStatus.NOT_FOUND)
-
-    const doneUpdate = await this.prisma.task.update({
+      
+      const doneUpdate = await this.prisma.task.update({
       where: {id}, 
       data: {done: findTask.done === false ? true : false}, 
       select: {
@@ -96,10 +95,26 @@ export class TaskService {
         done: true
       }
     })
-
-    if(!doneUpdate) throw new HttpException('Não foi possível definir o status da tarefa', HttpStatus.BAD_REQUEST)
     
-    return doneUpdate;
+    if(!doneUpdate) throw new HttpException('Não foi possível definir o status da tarefa', HttpStatus.BAD_REQUEST)
+      
+      return doneUpdate;
+    }
+    
+  async addTaskinPlaylist(id: string, body: CreateTaskDto) {
+    const taskCheck = await this.prisma.task.findUnique({ where: {id}})
+    if(!taskCheck) throw new HttpException('Tarefa não encontrada', HttpStatus.NOT_FOUND)
+      
+    const taskInPlay = await this.prisma.task.update({
+      where: {id}, 
+      data: {
+        playlistId: body.playlistId
+      }
+    })
+
+    if(!taskInPlay) throw new HttpException('Erro ao adicionar tarefa na playlist', HttpStatus.BAD_REQUEST)
+  
+    return taskInPlay;
   }
 
   async destroy(id: string) {
