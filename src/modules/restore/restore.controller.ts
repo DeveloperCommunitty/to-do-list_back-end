@@ -22,7 +22,6 @@ export class RestoreController {
     @Get(':userId')
     @ApiResponse({ status: 200, type: PasswordRedefinition})
     @ApiResponse({ status: 404, description: `Usuário inexistente!`})
-    @ApiResponse({ status: 417, description:`Não foi possivel encontrar os tokens desse usuário!`})
     @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
     @ApiOperation({ summary: 'Lista todos os tokens de um usuário' })
     findAllTokens(@Param('userId') userId: string){

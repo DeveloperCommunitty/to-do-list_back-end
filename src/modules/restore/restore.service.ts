@@ -163,26 +163,20 @@ export class RestoreService {
     }
 
     async findAllTokens(userId: string){
-        const userCheck = await this.prismaService.user.findUnique({
+        const user = await this.prismaService.user.findUnique({
             where:{
                 id: userId,
+            },
+            select:{
+                Restore: true
             }
         });
 
-        if(!userCheck)
+        if(!user)
             throw new HttpException(`Usuário inexistente!`, HttpStatus.NOT_FOUND);
 
-        const tokens = await this.prismaService.restore.findMany({
-            where:{
-                id: userId
-            }
-        });
-
-        if(!tokens)
-            throw new HttpException(`Não foi possivel encontrar os tokens desse usuário!`, HttpStatus.EXPECTATION_FAILED)
-
         return{
-            tokens,
+            user,
         }
 
     }
