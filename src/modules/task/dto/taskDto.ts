@@ -20,3 +20,4 @@ export class CreateTaskDto {
     @ApiProperty({ example: '82704273-d483-423a-8302-9b5b8447568a', description: 'Id da playlist'})
     playlistId: string
 }
+

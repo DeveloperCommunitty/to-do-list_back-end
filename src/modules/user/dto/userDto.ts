@@ -6,10 +6,6 @@ export enum Role{
     ADMIN = 'ADMIN'
 }
 export class CreateUserDto {
-    @ApiProperty({ example: '82704273-d483-423a-8302-9b5b8447568a', description: 'Id do usuário'})
-    @IsNotEmpty()
-    id: string
-
     @ApiProperty({ example: 'Email@exemplo.com', description: 'Email do usuário'})
     @IsNotEmpty({ message: 'Insira seu email' })
     email: string
@@ -22,7 +18,7 @@ export class CreateUserDto {
     @IsNotEmpty({ message: 'Digite seu nome' })
     name: string
 
-    @ApiProperty({ example: 'Papel Exemplo', description: 'Papel do usuário'})
+    @ApiProperty({ example: 'USER', description: 'Papel do usuário'})
     @IsNotEmpty({ message: 'Insira seu papel' })
     role: Role
 }
