@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { CreateTaskDto } from './dto/taskDto';
+import { CreateTaskDto, UpdateTaskInPlaylistDto } from './dto/taskDto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Tarefas')
@@ -64,7 +64,7 @@ export class TaskController {
   @ApiResponse({ status: 404, description: 'Tarefa não encontrada'})
   @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
   @ApiOperation({ summary: 'Adicionar tarefa na playlist' })
-  addTaskInPlaylist(@Param('id') id: string, @Body() body: CreateTaskDto){
+  addTaskInPlaylist(@Param('id') id: string, @Body() body: UpdateTaskInPlaylistDto){
     return this.taskService.addTaskinPlaylist(id, body)
   }
 

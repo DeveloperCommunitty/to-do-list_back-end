@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateTaskDto } from './dto/taskDto';
+import { CreateTaskDto, UpdateTaskInPlaylistDto } from './dto/taskDto';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -102,7 +102,7 @@ export class TaskService {
       return doneUpdate;
     }
     
-  async addTaskinPlaylist(id: string, body: CreateTaskDto) {
+  async addTaskinPlaylist(id: string, body: UpdateTaskInPlaylistDto) {
     const taskCheck = await this.prisma.task.findUnique({ where: {id}})
     if(!taskCheck) throw new HttpException('Tarefa não encontrada', HttpStatus.NOT_FOUND)
       
