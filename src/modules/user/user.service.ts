@@ -22,12 +22,13 @@ export class UserService {
       const hashpassword = await bcrypt.hash(body.password, randomsalt)
       const user = await this.prisma.user.create({
         data: {
-          id:body.id,
           email:body.email,
           password:hashpassword,
           name:body.name,
         }
       })
+
+      return user
   }
 
 
@@ -61,15 +62,20 @@ export class UserService {
       return user;
   }
 
+
+
   async update(id: string, body: UpdateUserDto) {
     const findUser = await this.prisma.user.findUnique({where:{id}})
     if (!findUser) throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
+
+      const randomSalt= randomInt(10,16)
+      const hashPassword = await bcrypt.hash(body.password, randomSalt)
 
     const updateUser = await this.prisma.user.update({
       where:{id},
       data:{
         name:body.name,
-        password:body.password,
+        password:hashPassword,
       },
       select:{
         id: true,
@@ -78,6 +84,8 @@ export class UserService {
         name:true
       }
     })
+    return updateUser
+
   }
 
   async remove(id: string) {
