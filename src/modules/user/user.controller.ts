@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/userDto';
+import { CreateUserDto, UpdateUserDto } from './dto/userDto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Usuários') 
@@ -38,12 +38,12 @@ export class UserController {
   }
 
   @Put(':id')
-  @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso' })
+  @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso', type:UpdateUserDto })
   @ApiResponse({ status: 400, description: 'Erro ao atualizar usuário' })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
   @ApiResponse({ status: 500, description: 'Erro interno do servidor' })
   @ApiOperation({ summary: 'Atualiza as informações de um usuário' })
-  update(@Param('id') id: string, @Body() updateUserDto: CreateUserDto) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
