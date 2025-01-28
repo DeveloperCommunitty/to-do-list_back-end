@@ -68,8 +68,8 @@ export class UserService {
     const findUser = await this.prisma.user.findUnique({where:{id}})
     if (!findUser) throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
 
-      const randomSalt= randomInt(10,16)
-      const hashPassword = await bcrypt.hash(body.password, randomSalt)
+      const RandomSalt= randomInt(10,16)
+      const hashPassword = await bcrypt.hash(body.password, RandomSalt)
 
     const updateUser = await this.prisma.user.update({
       where:{id},
