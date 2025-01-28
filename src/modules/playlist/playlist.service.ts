@@ -28,8 +28,9 @@ export class PlaylistService {
     return playlist;
   }
 
-  async findAll() {
+  async findAll(userId:string) {
     const playlists = await this.prisma.playlist.findMany({
+      where:{userId},
       select: {
         id: true,
         name: true,
@@ -54,6 +55,8 @@ export class PlaylistService {
 
     if (!playlist) throw new HttpException("Erro ao buscar a playlist", HttpStatus.BAD_REQUEST)
 
+
+      return playlist
   }
 
   async update(id: string, body: UpdatePlaylistDto) {

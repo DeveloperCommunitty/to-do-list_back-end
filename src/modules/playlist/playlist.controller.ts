@@ -19,14 +19,14 @@ export class PlaylistController {
     return this.playlistService.create(createPlaylistDto);
   }
 
-  @Get()
+  @Get(':userId')
   @ApiResponse({ status: 200, description: 'Playlists listadas com sucesso'})
   @ApiResponse({ status: 400, description: 'Erro ao listar Playlists'})
   @ApiResponse({ status: 404, description: 'Usuário não encontrado'})
   @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
   @ApiOperation({summary: "Listar as Playlists"})
-  findAll() {
-    return this.playlistService.findAll();
+  findAll(@Param('userId') userId:string) {
+    return this.playlistService.findAll(userId);
   }
 
   @Get(':id')
