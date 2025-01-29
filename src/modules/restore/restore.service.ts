@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
 import { randomInt } from 'crypto';
 import * as bcript from 'bcryptjs';
 import { PrismaService } from 'src/database/prisma.service';
 import { NewPassword, PasswordRedefinition, TokenConfirmed } from './dto/restoreDto';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class RestoreService {
-    constructor(private readonly prismaService: PrismaService, private readonly mailerService: MailerService) { }
+    constructor(private readonly prismaService: PrismaService, private readonly emailService: EmailService) { }
 
     async createToken(body: PasswordRedefinition) {
         const userCheck = await this.prismaService.user.findUnique({
@@ -20,51 +20,47 @@ export class RestoreService {
             throw new HttpException(`Usuário inexistente!`, HttpStatus.NOT_FOUND);
 
         const randomToken = String(randomInt(1000, 9999));
+        const context = {
+            username: userCheck.name,
+            code: randomToken,
+        }
 
-        this.mailerService.sendMail({
-            to: userCheck.email,
-            from: process.env.EMAIL,
-            subject: 'Recuperação de Senha',
-            template: 'recovery',
-            context: {
-                username: userCheck.name,
-                code: randomToken,
-            },
-        });
+        this.emailService.sendEmail(userCheck.email,'Recuperação de Senha','recovery', context)
+
         try {
             const passwordRedefinition = await this.prismaService.restore.create({
-                data:{
+                data: {
                     token: randomToken,
                     expirationAt: new Date(Date.now() + 20 * 60 * 1000),
                     userId: userCheck.id,
                 }
             });
 
-            if(!passwordRedefinition)
+            if (!passwordRedefinition)
                 throw new HttpException(`Erro ao criar token de recuperação de usuário!`, HttpStatus.EXPECTATION_FAILED);
 
             return {
                 message: 'Token de redefinição enviado com sucesso! O tempo de expiração dele é de 20 minutos!',
                 passwordRedefinition
             }
-        
+
         }
-        catch(error){
+        catch (error) {
             return {
                 message: 'Ocorreu algum erro e o token não foi enviado!',
                 error,
             }
-         };
+        };
     }
 
-    async confirmToken(body: TokenConfirmed){
+    async confirmToken(body: TokenConfirmed) {
         const userCheck = await this.prismaService.user.findUnique({
-            where:{
+            where: {
                 id: body.userId,
             }
         });
 
-        if(!userCheck)
+        if (!userCheck)
             throw new HttpException(`Usuário inexistente!`, HttpStatus.NOT_FOUND);
 
         const restore = await this.prismaService.restore.findUnique({
@@ -72,37 +68,37 @@ export class RestoreService {
                 id: body.tokenId,
                 used: false,
             },
-            select:{
+            select: {
                 id: true,
                 token: true,
                 used: true,
                 expirationAt: true
             }
         });
-        
-        if(!restore)
+
+        if (!restore)
             throw new HttpException(`Token inexistente!`, HttpStatus.NOT_FOUND);
 
         if (restore.expirationAt.getTime() < new Date().getTime()) {
             throw new HttpException(`O token está expirado!`, HttpStatus.NOT_FOUND);
         }
 
-        if (restore.used) 
+        if (restore.used)
             throw new HttpException(`O token já foi utilizado!`, HttpStatus.BAD_REQUEST);
-        
 
-        if(restore.token !== body.token){
+
+        if (restore.token !== body.token) {
             throw new HttpException(
                 `O token enviado não corresponde ao enviado ao email! Tente novamente com outro token de redefinição.`,
                 HttpStatus.UNAUTHORIZED
             );
         }
-        
+
         const tokenConfirmed = await this.prismaService.restore.update({
-            where:{
+            where: {
                 id: restore.id,
             },
-            data:{
+            data: {
                 used: true
             }
         });
@@ -111,21 +107,21 @@ export class RestoreService {
             message: 'O token foi enviado corretamente, agora digite sua nova senha!',
             tokenConfirmed
         }
-        
+
     }
 
-    async updatePassword(body: NewPassword){
+    async updatePassword(body: NewPassword) {
         const userCheck = await this.prismaService.user.findUnique({
-            where:{
+            where: {
                 id: body.userId,
             }
         });
 
-        if(!userCheck)
+        if (!userCheck)
             throw new HttpException(`Usuário inexistente!`, HttpStatus.NOT_FOUND);
 
         const tokenCheck = await this.prismaService.restore.findUnique({
-            where:{
+            where: {
                 id: body.tokenId,
                 userId: body.userId,
             }
@@ -135,47 +131,47 @@ export class RestoreService {
             throw new HttpException(`O token está expirado!`, HttpStatus.NOT_FOUND);
         }
 
-        if(!tokenCheck)
+        if (!tokenCheck)
             throw new HttpException(`Token inexistente ou o Token não está associado ao usuário especificado!`, HttpStatus.NOT_FOUND)
 
-        if(tokenCheck.used !== true)
-            throw new HttpException(`Token inválido!`,HttpStatus.UNAUTHORIZED)
+        if (tokenCheck.used !== true)
+            throw new HttpException(`Token inválido!`, HttpStatus.UNAUTHORIZED)
 
         const ramdomSalt = randomInt(10, 16);
         const hashPassword = await bcript.hash(body.password, ramdomSalt)
 
         const userUpdate = await this.prismaService.user.update({
-            where:{
+            where: {
                 id: body.userId,
             },
-            data:{
+            data: {
                 password: hashPassword
             }
         });
 
-        if(!userUpdate)
+        if (!userUpdate)
             throw new HttpException(`Ocorreu um erro ao atualizar a senha do usuário!`, HttpStatus.EXPECTATION_FAILED)
 
-        return{
+        return {
             message: 'Senha atualizada com sucesso!'
         }
 
     }
 
-    async findAllTokens(userId: string){
+    async findAllTokens(userId: string) {
         const user = await this.prismaService.user.findUnique({
-            where:{
+            where: {
                 id: userId,
             },
-            select:{
+            select: {
                 Restore: true
             }
         });
 
-        if(!user)
+        if (!user)
             throw new HttpException(`Usuário inexistente!`, HttpStatus.NOT_FOUND);
 
-        return{
+        return {
             user,
         }
 

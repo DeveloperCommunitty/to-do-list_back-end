@@ -7,9 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { CaslModule } from './casl/casl.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
-  imports: [TaskModule, RestoreModule, PlaylistModule, UserModule, AuthModule, CaslModule],
+  imports: [TaskModule, RestoreModule, PlaylistModule, UserModule, AuthModule, CaslModule, EmailModule],
   providers: [
     {
       provide: APP_GUARD,
