@@ -26,7 +26,26 @@ export class TaskService {
     return task;
   }
 
-  
+  async findAllUser(id: string){
+    const userCheck = await this.prisma.user.findUnique({where: {id}})
+
+    if(!userCheck) throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
+
+    const tasks = await this.prisma.task.findMany({
+      where: {id}, 
+      select: {
+        id: true, 
+        title: true, 
+        description: true, 
+        done: true
+      }
+    })
+
+    if(!tasks) throw new HttpException('Erro ao listar tarefas do usuário', HttpStatus.BAD_REQUEST)
+
+    return tasks;
+  }
+
   async findAll() {
     const tasks = await this.prisma.task.findMany({
       select: {

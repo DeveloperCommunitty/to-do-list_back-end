@@ -39,6 +39,18 @@ export class TaskController {
 
   @Get(':id')
   @ApiResponse({ status: 200, description: 'Tarefa listada com sucesso'})
+  @ApiResponse({ status: 400, description: 'Erro ao listar tarefas'})
+  @ApiResponse({ status: 404, description: 'Tarefa não encontrada'})
+  @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
+  @ApiOperation({ summary: 'Lista as tarefas por id do usuário' })
+  @ApiBearerAuth('access_token')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
+  findAllUser(@Param('id') id: string) {
+    return this.taskService.findAllUser(id);
+  }
+
+  @Get(':id')
+  @ApiResponse({ status: 200, description: 'Tarefa listada com sucesso'})
   @ApiResponse({ status: 400, description: 'Erro ao listar tarefa'})
   @ApiResponse({ status: 404, description: 'Tarefa não encontrada'})
   @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
