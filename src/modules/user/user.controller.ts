@@ -1,13 +1,12 @@
 import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/userDto';
+import { CreateUserDto, UpdateUserDto } from './dto/userDto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PoliciesGuard } from 'src/guard/policies.guard';
 import { CheckPolicies } from 'src/guard/policies.check';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { Action } from 'src/casl/dto/casl.dto';
 import { Public } from 'src/auth/skipAuth/skip.auth';
-
 
 @ApiTags('Usuários') 
 @Controller('user')
@@ -50,14 +49,14 @@ export class UserController {
   }
 
   @Put(':id')
-  @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso' })
+  @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso', type:UpdateUserDto })
   @ApiResponse({ status: 400, description: 'Erro ao atualizar usuário' })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
   @ApiResponse({ status: 500, description: 'Erro interno do servidor' })
   @ApiOperation({ summary: 'Atualiza as informações de um usuário' })
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
-  update(@Param('id') id: string, @Body() updateUserDto: CreateUserDto) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 

@@ -28,8 +28,9 @@ export class PlaylistService {
     return playlist;
   }
 
-  async findAll() {
+  async findAll(userId:string) {
     const playlists = await this.prisma.playlist.findMany({
+      where:{userId},
       select: {
         id: true,
         name: true,

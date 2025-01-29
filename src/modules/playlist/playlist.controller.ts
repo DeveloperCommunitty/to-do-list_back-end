@@ -26,7 +26,7 @@ export class PlaylistController {
     return this.playlistService.create(createPlaylistDto);
   }
 
-  @Get()
+  @Get(':userId')
   @ApiResponse({ status: 200, description: 'Playlists listadas com sucesso'})
   @ApiResponse({ status: 400, description: 'Erro ao listar Playlists'})
   @ApiResponse({ status: 404, description: 'Usuário não encontrado'})
@@ -34,8 +34,8 @@ export class PlaylistController {
   @ApiOperation({summary: "Listar as Playlists"})
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
-  findAll() {
-    return this.playlistService.findAll();
+  findAll(@Param('userId') userId:string) {
+    return this.playlistService.findAll(userId);
   }
 
   @Get(':id')

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { CreateTaskDto } from './dto/taskDto';
+import { CreateTaskDto, UpdateTaskInPlaylistDto } from './dto/taskDto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PoliciesGuard } from 'src/guard/policies.guard';
 import { Action } from 'src/casl/dto/casl.dto';
@@ -71,6 +71,18 @@ export class TaskController {
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
   updateDone(@Param('id') id: string){
     return this.taskService.updateDone(id)
+  }
+
+  @Put('/playlist/:id')
+  @ApiResponse({ status: 200, description: 'Tarefa adicionada na playlist com sucesso'})
+  @ApiResponse({ status: 400, description: 'Erro ao adicionar tarefa na playlist'})
+  @ApiResponse({ status: 404, description: 'Tarefa não encontrada'})
+  @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
+  @ApiOperation({ summary: 'Adicionar tarefa na playlist' })
+  @ApiBearerAuth('access_token')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
+  addTaskInPlaylist(@Param('id') id: string, @Body() body: UpdateTaskInPlaylistDto){
+    return this.taskService.addTaskinPlaylist(id, body)
   }
 
   @Delete(':id')
