@@ -31,12 +31,29 @@ export class UserService {
       return user
   }
 
+  async findById(email: string){
+    const isEmail = email.includes('@');
+
+    if(!isEmail)
+      throw new HttpException(`E-mail invalido, verifique-o e tente novamente!`, HttpStatus.BAD_REQUEST);
+    
+    const user = await this.prisma.user.findUnique({
+      where:{
+        email,
+      }
+    });
+
+    if(!user) throw new HttpException(`E-mail não cadastrado!`, HttpStatus.NOT_FOUND);
+
+    return user;
+  }
+
   async findAll() {
     const users = await this.prisma.user.findMany({
       select: {
         id: true,
         email: true,
-        password: true,
+        role: true,
         name: true
       }
     })
@@ -52,7 +69,7 @@ export class UserService {
       select: {
         id: true,
         email: true,
-        password: true,
+        role: true,
         name: true
       }
     })

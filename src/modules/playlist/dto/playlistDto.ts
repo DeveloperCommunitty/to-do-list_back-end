@@ -14,12 +14,9 @@ export class CreatePlaylistDto{
     @ApiProperty({ example: 'Uma playlist para verificar minhas receitas', description: 'Descrição da Playlist'})
     @IsNotEmpty()
     description:string;
-    
-
 }
 
 export class UpdatePlaylistDto{
-    
     @ApiProperty({ example: 'Receitas V2', description: 'Nome da Playlist'})
     @IsNotEmpty()
     name:string;

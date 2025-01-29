@@ -1,10 +1,16 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/userDto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PoliciesGuard } from 'src/guard/policies.guard';
+import { CheckPolicies } from 'src/guard/policies.check';
+import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { Action } from 'src/casl/dto/casl.dto';
+import { Public } from 'src/auth/skipAuth/skip.auth';
 
 @ApiTags('Usuários') 
 @Controller('user')
+@UseGuards(PoliciesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -13,6 +19,7 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Email já existente' })
   @ApiResponse({ status: 500, description: 'Erro interno do servidor' })
   @ApiOperation({ summary: 'Cria um novo usuário' })
+  @Public()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
@@ -23,6 +30,8 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
   @ApiResponse({ status: 500, description: 'Erro interno do servidor' })
   @ApiOperation({ summary: 'Lista todos os usuários' })
+  @ApiBearerAuth('access_token')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Admin, 'all'))
   findAll() {
     return this.userService.findAll();
   }
@@ -33,6 +42,8 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
   @ApiResponse({ status: 500, description: 'Erro interno do servidor' })
   @ApiOperation({ summary: 'Busca um usuário por ID' })
+  @ApiBearerAuth('access_token') 
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
@@ -43,6 +54,8 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
   @ApiResponse({ status: 500, description: 'Erro interno do servidor' })
   @ApiOperation({ summary: 'Atualiza as informações de um usuário' })
+  @ApiBearerAuth('access_token')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
@@ -53,6 +66,8 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
   @ApiResponse({ status: 500, description: 'Erro interno do servidor' })
   @ApiOperation({ summary: 'Deleta um usuário' })
+  @ApiBearerAuth('access_token')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }
