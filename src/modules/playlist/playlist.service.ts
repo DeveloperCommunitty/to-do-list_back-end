@@ -54,6 +54,8 @@ export class PlaylistService {
 
     if (!playlist) throw new HttpException("Erro ao buscar a playlist", HttpStatus.BAD_REQUEST)
 
+
+      return playlist
   }
 
   async update(id: string, body: UpdatePlaylistDto) {
