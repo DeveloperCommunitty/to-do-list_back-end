@@ -1,19 +1,20 @@
-import { CreatePlaylistDto,UpdatePlaylistDto } from './dto/playlistDto';
+import { CreatePlaylistDto, UpdatePlaylistDto } from './dto/playlistDto';
 import { PrismaService } from 'src/database/prisma.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PlaylistService {
-    constructor(private readonly prisma: PrismaService){}
-  
- async create(body: CreatePlaylistDto) {
+  constructor(private readonly prisma: PrismaService) { }
+
+  async create(body: CreatePlaylistDto) {
     const usrCheck = await this.prisma.user.findUnique({
-      where:{
+      where: {
         id: body.userId
       }
-    })
-    if(!usrCheck) throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
-  
+    });
+    
+    if (!usrCheck) throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND)
+
     const playlist = await this.prisma.playlist.create({
       data: {
         name: body.name,
@@ -22,10 +23,10 @@ export class PlaylistService {
       },
     })
 
-    if(!playlist) throw new HttpException("Erro ao criar a playlist", HttpStatus.BAD_REQUEST)
-  
-      return playlist;
-    }
+    if (!playlist) throw new HttpException("Erro ao criar a playlist", HttpStatus.BAD_REQUEST)
+
+    return playlist;
+  }
 
   async findAll(userId:string) {
     const playlists = await this.prisma.playlist.findMany({
@@ -37,57 +38,59 @@ export class PlaylistService {
       }
     })
 
-    if(!playlists) throw new HttpException("Erro ao listar Playlists",HttpStatus.BAD_REQUEST)
-      
+    if (!playlists) throw new HttpException("Erro ao listar Playlists", HttpStatus.BAD_REQUEST)
+
     return playlists
-    }
+  }
 
   async findOne(id: string) {
     const playlist = await this.prisma.playlist.findUnique({
-      where: {id},
+      where: { id },
       select: {
-        id:true,
-        name:true,
-        description:true
+        id: true,
+        name: true,
+        description: true
       }
     })
 
-    if(!playlist) throw new HttpException("Erro ao buscar a playlist", HttpStatus.BAD_REQUEST)
+    if (!playlist) throw new HttpException("Erro ao buscar a playlist", HttpStatus.BAD_REQUEST)
 
 
       return playlist
   }
 
-async update(id: string, body: UpdatePlaylistDto) {
-    const checkPlaylist= await this.prisma.playlist.findUnique({where:{id}})
-    if(!checkPlaylist) throw new HttpException("Erro ao buscar a playlist", HttpStatus.BAD_REQUEST)
+  async update(id: string, body: UpdatePlaylistDto) {
+    const checkPlaylist = await this.prisma.playlist.findUnique({ where: { id } })
 
-    const updatePlaylist= await this.prisma.playlist.update({
-      where: {id},
-      data:{
+    if (!checkPlaylist) throw new HttpException("Erro ao buscar a playlist", HttpStatus.BAD_REQUEST)
+
+    const updatePlaylist = await this.prisma.playlist.update({
+      where: { id },
+      data: {
         name: body.name,
         description: body.description
       },
-      select:{
-        id:true,
-        name:true,
-        description:true
+      select: {
+        id: true,
+        name: true,
+        description: true
       }
     })
 
-    if(!updatePlaylist) throw new HttpException("Erro ao atualizar Playlist", HttpStatus.BAD_REQUEST)
-  
+    if (!updatePlaylist) throw new HttpException("Erro ao atualizar Playlist", HttpStatus.BAD_REQUEST)
+
     return updatePlaylist
 
-    }
+  }
 
   async remove(id: string) {
-    const checkPlaylist= await this.prisma.playlist.findUnique({where:{id}})
-    if(!checkPlaylist) throw new HttpException("Erro ao buscar a playlist", HttpStatus.BAD_REQUEST)
+    const checkPlaylist = await this.prisma.playlist.findUnique({ where: { id } })
 
-    await this.prisma.playlist.delete({where:{id}})
+    if (!checkPlaylist) throw new HttpException("Erro ao buscar a playlist", HttpStatus.BAD_REQUEST)
 
-    return{
+    await this.prisma.playlist.delete({ where: { id } })
+
+    return {
       message: "Playlist apagada com sucesso ",
       status: HttpStatus.OK
     }

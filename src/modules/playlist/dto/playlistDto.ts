@@ -3,9 +3,7 @@ import { IsNotEmpty } from "class-validator";
 
 
 export class CreatePlaylistDto{
-    
-
-    @ApiProperty({ example: '72704273-d483-423a-1234-9b5b8447568a', description: 'Id do Usuario'})
+    @ApiProperty({ example: '82704273-d483-423a-1234-9b5b8447568a', description: 'Id do Usuario'})
     @IsNotEmpty()
     userId:string;
 

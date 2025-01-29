@@ -9,8 +9,6 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class PlaylistController {
   constructor(private readonly playlistService: PlaylistService) {}
 
-
-  
   @Post()
   @ApiResponse({ status: 200, description: 'Playlist criada com sucesso', type: CreatePlaylistDto})
   @ApiResponse({ status: 400, description: 'Erro ao criar Playlist'})
@@ -46,7 +44,6 @@ export class PlaylistController {
   @ApiResponse({ status: 400, description: 'Erro ao atualizar Playlist'})
   @ApiResponse({ status: 404, description: 'Usuário não encontrado'})
   @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
-  
   @ApiOperation({summary: "Atualizar a Playlist"})
   update(@Param('id') id: string, @Body() updatePlaylistDto: UpdatePlaylistDto) {
     return this.playlistService.update(id, updatePlaylistDto);

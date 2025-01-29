@@ -18,7 +18,7 @@ export class CreateUserDto {
     @IsNotEmpty({ message: 'Digite seu nome' })
     name: string
 
-    @ApiProperty({ example: 'Papel Exemplo', description: 'Papel do usuário'})
+    @ApiProperty({ example: 'USER', description: 'Papel do usuário'})
     @IsNotEmpty({ message: 'Insira seu papel' })
     role: Role
 }
