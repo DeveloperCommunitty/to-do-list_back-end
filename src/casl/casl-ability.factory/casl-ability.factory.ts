@@ -11,7 +11,7 @@ export class CaslAbilityFactory {
   createForUser(user: User) {
     const { can, build } = new AbilityBuilder<Ability<[Action, Subjects]>>(Ability as AbilityClass<AppAbility>);
 
-    if (user.role === 'ADMIN') {
+    if (user?.role === 'ADMIN') {
       can(Action.Admin, 'all'); 
     } else {
       can(Action.User, 'all'); 

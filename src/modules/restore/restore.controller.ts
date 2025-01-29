@@ -6,6 +6,7 @@ import { PoliciesGuard } from 'src/guard/policies.guard';
 import { CheckPolicies } from 'src/guard/policies.check';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { Action } from 'src/casl/dto/casl.dto';
+import { Public } from 'src/auth/skipAuth/skip.auth';
 
 @ApiTags('Restauração') 
 @Controller('restore')
@@ -20,8 +21,7 @@ export class RestoreController {
     @ApiResponse({ status: 417, description:`Erro ao criar token de recuperação de usuário!`})
     @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
     @ApiOperation({ summary: 'Envia e cria o token de recuperação ao email do usuário' })
-    @ApiBearerAuth('access_token')
-    @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
+    @Public()
     create(@Body() body: PasswordRedefinition){
         return this.restoreService.createToken(body)
     }
@@ -32,7 +32,7 @@ export class RestoreController {
     @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
     @ApiOperation({ summary: 'Lista todos os tokens de um usuário' })
     @ApiBearerAuth('access_token')
-    @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.Admin, 'all'))
     findAllTokens(@Param('userId') userId: string){
         return this.restoreService.findAllTokens(userId)
     }
@@ -44,8 +44,7 @@ export class RestoreController {
     @ApiResponse({ status: 404, description: 'Usuário não encontrado ou Token inexistente ou o token está expirado!!'})
     @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
     @ApiOperation({ summary: 'Confirma o token enviado ao email' })
-    @ApiBearerAuth('access_token')
-    @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
+    @Public()
     confirmToken(@Body() body: TokenConfirmed){
         return this.restoreService.confirmToken(body)
     }
@@ -58,8 +57,7 @@ export class RestoreController {
     @ApiResponse({ status: 417, description: `Ocorreu um erro ao atualizar a senha do usuário!`})
     @ApiResponse({ status: 500, description: 'Erro interno do servidor'})
     @ApiOperation({ summary: 'Atualiza a senha do usuário' })
-    @ApiBearerAuth('access_token')
-    @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
+    @Public()
     updatePassword(@Body() body: NewPassword){
         return this.restoreService.updatePassword(body)
     }
