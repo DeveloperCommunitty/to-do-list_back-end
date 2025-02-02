@@ -8,7 +8,7 @@ import * as nodemailer from 'nodemailer';
   providers: [
     EmailService,
     {
-      provide: 'MAIL_TRANSPORT',  // Nome fixo para o provedor
+      provide: 'MAIL_TRANSPORT', // Nome fixo para o provedor
       useFactory: () => {
         return nodemailer.createTransport({
           service: 'gmail',
@@ -20,6 +20,6 @@ import * as nodemailer from 'nodemailer';
       },
     },
   ],
-  exports: [EmailService],  
+  exports: [EmailService],
 })
 export class EmailModule {}

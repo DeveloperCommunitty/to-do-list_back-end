@@ -10,7 +10,15 @@ import { CaslModule } from './casl/casl.module';
 import { EmailModule } from './modules/email/email.module';
 
 @Module({
-  imports: [TaskModule, RestoreModule, PlaylistModule, UserModule, AuthModule, CaslModule, EmailModule],
+  imports: [
+    TaskModule,
+    RestoreModule,
+    PlaylistModule,
+    UserModule,
+    AuthModule,
+    CaslModule,
+    EmailModule,
+  ],
   providers: [
     {
       provide: APP_GUARD,
@@ -18,4 +26,4 @@ import { EmailModule } from './modules/email/email.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

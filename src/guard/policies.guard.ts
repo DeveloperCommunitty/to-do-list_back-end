@@ -1,8 +1,16 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { AppAbility, CaslAbilityFactory } from "src/casl/casl-ability.factory/casl-ability.factory";
-import { CHECK_POLICIES_KEY } from "./policies.check";
-import { PolicyHandler } from "./policies.handler";
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import {
+  AppAbility,
+  CaslAbilityFactory,
+} from 'src/casl/casl-ability.factory/casl-ability.factory';
+import { CHECK_POLICIES_KEY } from './policies.check';
+import { PolicyHandler } from './policies.handler';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {
@@ -22,17 +30,17 @@ export class PoliciesGuard implements CanActivate {
     const ability = this.caslAbilityFactory.createForUser(user);
 
     const allPoliciesValid = policyHandlers.every((handler) =>
-        this.execPolicyHandler(handler, ability),
-     );
+      this.execPolicyHandler(handler, ability),
+    );
 
     if (!allPoliciesValid) {
-        throw new ForbiddenException({
-          statusCode: 403,
-          message: 'Você não tem permissão para acessar este recurso.',
-          error: 'Acesso restrito',
-        });
+      throw new ForbiddenException({
+        statusCode: 403,
+        message: 'Você não tem permissão para acessar este recurso.',
+        error: 'Acesso restrito',
+      });
     }
-  
+
     return allPoliciesValid;
   }
 

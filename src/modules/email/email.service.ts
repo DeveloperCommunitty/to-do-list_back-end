@@ -5,22 +5,36 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 type context = {
-    username: string;
-    code: string;
-}
+  username: string;
+  code: string;
+};
 
 @Injectable()
 export class EmailService {
-  constructor(@Inject('MAIL_TRANSPORT') private transporter: nodemailer.Transporter) {}
+  constructor(
+    @Inject('MAIL_TRANSPORT') private transporter: nodemailer.Transporter,
+  ) {}
 
-  private async compileTemplate(templateName: string, context: context): Promise<string> {
-    const templatePath = path.join(__dirname, '../../../src/templates', `${templateName}.hbs`);
+  private async compileTemplate(
+    templateName: string,
+    context: context,
+  ): Promise<string> {
+    const templatePath = path.join(
+      __dirname,
+      '../../../src/templates',
+      `${templateName}.hbs`,
+    );
     const templateSource = fs.readFileSync(templatePath, 'utf8');
     const compiledTemplate = handlebars.compile(templateSource);
     return compiledTemplate(context);
   }
 
-  async sendEmail(to: string, subject: string, template: string, context: any): Promise<any> {
+  async sendEmail(
+    to: string,
+    subject: string,
+    template: string,
+    context: any,
+  ): Promise<any> {
     const htmlContent = await this.compileTemplate(template, context);
 
     const mailOptions = {
@@ -39,7 +53,3 @@ export class EmailService {
     }
   }
 }
-
-
-
-  

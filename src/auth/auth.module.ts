@@ -12,12 +12,12 @@ import { CaslModule } from 'src/casl/casl.module';
     JwtModule.registerAsync({
       global: true,
       useFactory: async () => ({
-        secret: process.env.JWT_SECRET, 
-        signOptions: { expiresIn: '43200s' }, 
+        secret: process.env.JWT_SECRET,
+        signOptions: { expiresIn: '43200s' },
       }),
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, PrismaService]
+  providers: [AuthService, UserService, PrismaService],
 })
 export class AuthModule {}

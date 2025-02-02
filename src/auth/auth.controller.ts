@@ -4,14 +4,14 @@ import { AuthDto } from './dto/authDto';
 import { Public } from './skipAuth/skip.auth';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Autenticação') 
+@ApiTags('Autenticação')
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService){}
+  constructor(private readonly authService: AuthService) {}
 
-    @Post('login')
-    @Public()
-    singIn(@Body() body: AuthDto){
-        return this.authService.signIn(body.email, body.password)
-    }
+  @Post('login')
+  @Public()
+  singIn(@Body() body: AuthDto) {
+    return this.authService.signIn(body.email, body.password);
+  }
 }
