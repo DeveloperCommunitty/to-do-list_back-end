@@ -2,6 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/modules/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { ResponseUserAuthDto } from './dto/authDto';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -12,13 +14,11 @@ export class AuthService {
   async signIn(
     email: string,
     password: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<{ access_token: string, user: ResponseUserAuthDto}> {
     const user = await this.usersService.findById(email);
-    console.log(user);
 
     const passwordCorrect = await bcrypt.compare(password, user.password);
 
-    console.log(passwordCorrect);
     if (!passwordCorrect)
       throw new UnauthorizedException({
         message: 'Falha de autenticação.',
@@ -31,11 +31,14 @@ export class AuthService {
       role: user.role,
     };
 
-    console.log(payload);
-    console.log(await this.jwtService.signAsync(payload));
 
     return {
       access_token: await this.jwtService.signAsync(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      }
     };
   }
 }
