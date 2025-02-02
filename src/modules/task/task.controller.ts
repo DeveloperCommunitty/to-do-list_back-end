@@ -22,6 +22,7 @@ import { Action } from 'src/casl/dto/casl.dto';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { CheckPolicies } from 'src/guard/policies.check';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Public } from 'src/auth/skipAuth/skip.auth';
 
 @ApiTags('Tarefas')
 @Controller('tarefa')
@@ -45,7 +46,7 @@ export class TaskController {
     return this.taskService.create(body);
   }
 
-  @Get(':id')
+  @Get('tarefas/:id')
   @ApiResponse({ status: 200, description: 'Tarefa listada com sucesso' })
   @ApiResponse({ status: 400, description: 'Erro ao listar tarefas' })
   @ApiResponse({ status: 404, description: 'Tarefa não encontrada' })
@@ -53,6 +54,7 @@ export class TaskController {
   @ApiOperation({ summary: 'Lista as tarefas por id do usuário' })
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
+  @Public()
   findAllUser(@Param('id') id: string, @Query() paginationDto: PaginationDto) {
     return this.taskService.findAllUser(id, paginationDto);
   }

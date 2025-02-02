@@ -40,14 +40,15 @@ export class TaskService {
 
     const tasks = await this.prisma.task.findMany({
       skip: offSet,
-      take: page,
-      where: { id },
+      take: pageSize,
+      where: { userId: id },
       select: {
         id: true,
         title: true,
         description: true,
         done: true,
       },
+      orderBy: { id: 'desc'}
     });
 
     if (!tasks)
