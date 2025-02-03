@@ -72,6 +72,7 @@ export class UserService {
         email: true,
         role: true,
         name: true,
+        createdAt: true
       },
       orderBy: { id: 'desc' },
     });
@@ -136,6 +137,9 @@ export class UserService {
 
     if (!findUser)
       throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
+
+    if(findUser.role == 'ADMIN')
+      throw new HttpException('Não é possivel deletar um administrador!', HttpStatus.UNAUTHORIZED);
 
     await this.prisma.user.delete({ where: { id } });
 

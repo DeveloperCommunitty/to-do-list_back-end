@@ -51,7 +51,6 @@ export class UserController {
   @ApiResponse({ status: 500, description: 'Erro interno do servidor' })
   @ApiOperation({ summary: 'Lista todos os usuários' })
   @ApiBearerAuth('access_token')
-  @Public()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Admin, 'all'))
   findAll(@Query() paginationDto: PaginationDto) {
     return this.userService.findAll(paginationDto);
