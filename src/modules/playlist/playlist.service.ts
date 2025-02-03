@@ -2,15 +2,16 @@ import { CreatePlaylistDto, UpdatePlaylistDto } from './dto/playlistDto';
 import { PrismaService } from 'src/database/prisma.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class PlaylistService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(body: CreatePlaylistDto) {
+  async create(body: CreatePlaylistDto, userId: Request) {
     const usrCheck = await this.prisma.user.findUnique({
       where: {
-        id: body.userId,
+        id: userId.user.id,
       },
     });
 
@@ -19,9 +20,8 @@ export class PlaylistService {
 
     const playlist = await this.prisma.playlist.create({
       data: {
-        name: body.name,
-        description: body.description,
-        userId: body.userId,
+        ...body,
+        userId: userId.user.id,
       },
     });
 
@@ -34,14 +34,14 @@ export class PlaylistService {
     return playlist;
   }
 
-  async findAll(userId: string, paginationDto: PaginationDto) {
+  async findAll(userId: Request, paginationDto: PaginationDto) {
     const { page, pageSize } = paginationDto;
     const offSet = (page - 1) * pageSize;
 
     const playlists = await this.prisma.playlist.findMany({
       skip: offSet,
       take: pageSize,
-      where: { userId },
+      where: { userId: userId.user.id },
       select: {
         id: true,
         name: true,

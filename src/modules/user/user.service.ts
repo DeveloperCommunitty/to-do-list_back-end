@@ -4,6 +4,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { randomInt } from 'crypto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class UserService {
@@ -91,9 +92,9 @@ export class UserService {
     };
   }
 
-  async findOne(id: string) {
+  async findOne(userId: Request) {
     const user = await this.prisma.user.findUnique({
-      where: { id },
+      where: { id: userId.user.id },
       select: {
         id: true,
         email: true,
@@ -107,8 +108,8 @@ export class UserService {
     return user;
   }
 
-  async update(id: string, body: UpdateUserDto) {
-    const findUser = await this.prisma.user.findUnique({ where: { id } });
+  async update(userId: Request, body: UpdateUserDto) {
+    const findUser = await this.prisma.user.findUnique({ where: { id: userId.user.id } });
 
     if (!findUser)
       throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
@@ -117,7 +118,7 @@ export class UserService {
     const hashPassword = await bcrypt.hash(body.password, RandomSalt);
 
     const updateUser = await this.prisma.user.update({
-      where: { id },
+      where: { id: userId.user.id },
       data: {
         name: body.name,
         password: hashPassword,

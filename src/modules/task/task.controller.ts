@@ -8,9 +8,10 @@ import {
   Put,
   UseGuards,
   Query,
+  Req,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { CreateTaskDto, UpdateTaskInPlaylistDto } from './dto/taskDto';
+import { CreateTaskDto, UpdateTaskDto, UpdateTaskInPlaylistDto } from './dto/taskDto';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -22,6 +23,7 @@ import { Action } from 'src/casl/dto/casl.dto';
 import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { CheckPolicies } from 'src/guard/policies.check';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Request } from 'express';
 
 @ApiTags('Tarefas')
 @Controller('tarefa')
@@ -41,11 +43,11 @@ export class TaskController {
   @ApiOperation({ summary: 'Cria tarefas' })
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
-  create(@Body() body: CreateTaskDto) {
-    return this.taskService.create(body);
+  create(@Body() body: CreateTaskDto,@Req() req: Request) {
+    return this.taskService.create(body, req);
   }
 
-  @Get('tarefas/:id')
+  @Get('tarefas')
   @ApiResponse({ status: 200, description: 'Tarefa listada com sucesso' })
   @ApiResponse({ status: 400, description: 'Erro ao listar tarefas' })
   @ApiResponse({ status: 404, description: 'Tarefa não encontrada' })
@@ -53,8 +55,8 @@ export class TaskController {
   @ApiOperation({ summary: 'Lista as tarefas por id do usuário' })
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
-  findAllUser(@Param('id') id: string, @Query() paginationDto: PaginationDto) {
-    return this.taskService.findAllUser(id, paginationDto);
+  findAllUser(@Query() paginationDto: PaginationDto,@Req() req: Request) {
+    return this.taskService.findAllUser(req, paginationDto);
   }
 
   @Get(':id')
@@ -77,7 +79,7 @@ export class TaskController {
   @ApiOperation({ summary: 'Atualizar uma tarefa' })
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
-  update(@Param('id') id: string, @Body() body: CreateTaskDto) {
+  update(@Param('id') id: string, @Body() body: UpdateTaskDto) {
     return this.taskService.update(id, body);
   }
 

@@ -8,6 +8,7 @@ import {
   Put,
   UseGuards,
   Query,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/userDto';
@@ -23,6 +24,7 @@ import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { Action } from 'src/casl/dto/casl.dto';
 import { Public } from 'src/auth/skipAuth/skip.auth';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Request } from 'express';
 
 @ApiTags('Usuários')
 @Controller('user')
@@ -56,7 +58,7 @@ export class UserController {
     return this.userService.findAll(paginationDto);
   }
 
-  @Get(':id')
+  @Get()
   @ApiResponse({ status: 200, description: 'Usuário encontrado com sucesso' })
   @ApiResponse({ status: 400, description: 'Erro ao buscar usuário' })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
@@ -64,11 +66,11 @@ export class UserController {
   @ApiOperation({ summary: 'Busca um usuário por ID' })
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+  findOne(@Req() userId: Request) {
+    return this.userService.findOne(userId);
   }
 
-  @Put(':id')
+  @Put()
   @ApiResponse({
     status: 200,
     description: 'Usuário atualizado com sucesso',
@@ -80,8 +82,8 @@ export class UserController {
   @ApiOperation({ summary: 'Atualiza as informações de um usuário' })
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  update(@Req() userId: Request, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(userId, updateUserDto);
   }
 
   @Delete(':id')

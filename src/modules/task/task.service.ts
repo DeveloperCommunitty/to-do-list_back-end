@@ -1,16 +1,17 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateTaskDto, UpdateTaskInPlaylistDto } from './dto/taskDto';
+import { HttpException, HttpStatus, Injectable, Req } from '@nestjs/common';
+import { CreateTaskDto, UpdateTaskDto, UpdateTaskInPlaylistDto } from './dto/taskDto';
 import { PrismaService } from 'src/database/prisma.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(body: CreateTaskDto) {
+  async create(body: CreateTaskDto, userId: Request) {
     const usrCheck = await this.prisma.user.findUnique({
       where: {
-        id: body.userId,
+        id: userId.user.id,
       },
     });
 
@@ -20,6 +21,7 @@ export class TaskService {
     const task = await this.prisma.task.create({
       data: {
         ...body,
+        userId: userId.user.id,
       },
     });
 
@@ -29,11 +31,11 @@ export class TaskService {
     return task;
   }
 
-  async findAllUser(id: string, paginationDto: PaginationDto) {
+  async findAllUser(userId: Request, paginationDto: PaginationDto) {
     const { page, pageSize } = paginationDto;
     const offSet = (page - 1) * pageSize;
 
-    const userCheck = await this.prisma.user.findUnique({ where: { id } });
+    const userCheck = await this.prisma.user.findUnique({ where: { id: userId.user.id } });
 
     if (!userCheck)
       throw new HttpException('Usuário não encontrado', HttpStatus.NOT_FOUND);
@@ -41,12 +43,13 @@ export class TaskService {
     const tasks = await this.prisma.task.findMany({
       skip: offSet,
       take: pageSize,
-      where: { userId: id },
+      where: { userId: userId.user.id },
       select: {
         id: true,
         title: true,
         description: true,
         done: true,
+        createdAt: true
       },
       orderBy: { id: 'desc'}
     });
@@ -83,7 +86,7 @@ export class TaskService {
     return task;
   }
 
-  async update(id: string, body: CreateTaskDto) {
+  async update(id: string, body: UpdateTaskDto) {
     const findTask = await this.prisma.task.findUnique({ where: { id } });
     if (!findTask)
       throw new HttpException('Tarefa não encontrada', HttpStatus.NOT_FOUND);
