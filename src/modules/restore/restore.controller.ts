@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import {
   NewPassword,
   PasswordRedefinition,
@@ -80,7 +80,7 @@ export class RestoreController {
     return this.restoreService.confirmToken(body);
   }
 
-  @Post('new-credentials')
+  @Patch('new-credentials')
   @ApiResponse({
     status: 200,
     description: 'Senha atualizada com sucesso!',
