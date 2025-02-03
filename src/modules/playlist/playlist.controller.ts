@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  Req,
 } from '@nestjs/common';
 import { PlaylistService } from './playlist.service';
 import { CreatePlaylistDto } from './dto/playlistDto';
@@ -23,6 +24,7 @@ import { AppAbility } from 'src/casl/casl-ability.factory/casl-ability.factory';
 import { CheckPolicies } from 'src/guard/policies.check';
 import { Action } from 'src/casl/dto/casl.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Request } from 'express';
 
 @ApiTags('Playlist')
 @Controller('playlist')
@@ -42,11 +44,11 @@ export class PlaylistController {
   @ApiOperation({ summary: 'Criar a Playlist' })
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
-  create(@Body() createPlaylistDto: CreatePlaylistDto) {
-    return this.playlistService.create(createPlaylistDto);
+  create(@Body() createPlaylistDto: CreatePlaylistDto, @Req() userId: Request) {
+    return this.playlistService.create(createPlaylistDto, userId);
   }
 
-  @Get(':userId')
+  @Get()
   @ApiResponse({ status: 200, description: 'Playlists listadas com sucesso' })
   @ApiResponse({ status: 400, description: 'Erro ao listar Playlists' })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
@@ -55,7 +57,7 @@ export class PlaylistController {
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
   findAll(
-    @Param('userId') userId: string,
+    userId: Request,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.playlistService.findAll(userId, paginationDto);

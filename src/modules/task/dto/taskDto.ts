@@ -6,7 +6,6 @@ export class CreateTaskDto {
     example: '82704273-d483-423a-8302-9b5b8447568a',
     description: 'Id do usuário',
   })
-  @IsNotEmpty()
   userId: string;
 
   @ApiProperty({ example: 'Estudar xh', description: 'Título da Tarefa' })
@@ -22,6 +21,17 @@ export class CreateTaskDto {
 
   @ApiProperty({ description: 'Controle para tarefas concluídas' })
   done?: boolean;
+}
+
+export class UpdateTaskDto {
+  @ApiProperty({ example: 'Estudar xh', description: 'Título da Tarefa' })
+  title?: string;
+
+  @ApiProperty({
+    example: 'Estudar para realizar Concurso x',
+    description: 'Descrição da tarefa',
+  })
+  description?: string;
 }
 
 export class UpdateTaskInPlaylistDto {

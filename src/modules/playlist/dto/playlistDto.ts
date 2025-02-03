@@ -6,7 +6,6 @@ export class CreatePlaylistDto {
     example: '82704273-d483-423a-1234-9b5b8447568a',
     description: 'Id do Usuario',
   })
-  @IsNotEmpty()
   userId: string;
 
   @ApiProperty({ example: 'Receitas', description: 'Nome da Playlist' })
