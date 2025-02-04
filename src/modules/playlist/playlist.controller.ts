@@ -57,7 +57,7 @@ export class PlaylistController {
   @ApiBearerAuth('access_token')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.User, 'all'))
   findAll(
-    userId: Request,
+    @Req() userId: Request,
     @Query() paginationDto: PaginationDto,
   ) {
     return this.playlistService.findAll(userId, paginationDto);

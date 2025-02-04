@@ -2,12 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 export class CreateTaskDto {
-  @ApiProperty({
-    example: '82704273-d483-423a-8302-9b5b8447568a',
-    description: 'Id do usuário',
-  })
-  userId: string;
-
   @ApiProperty({ example: 'Estudar xh', description: 'Título da Tarefa' })
   @IsNotEmpty({ message: 'Digite um título' })
   title: string;
