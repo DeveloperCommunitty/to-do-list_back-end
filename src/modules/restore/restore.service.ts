@@ -68,15 +68,6 @@ export class RestoreService {
   }
 
   async confirmToken(body: TokenConfirmed) {
-    const userCheck = await this.prismaService.user.findUnique({
-      where: {
-        id: body.userId,
-      },
-    });
-
-    if (!userCheck)
-      throw new HttpException(`Usuário inexistente!`, HttpStatus.NOT_FOUND);
-
     const restore = await this.prismaService.restore.findUnique({
       where: {
         id: body.tokenId,
@@ -87,6 +78,7 @@ export class RestoreService {
         token: true,
         used: true,
         expirationAt: true,
+        user: true,
       },
     });
 
