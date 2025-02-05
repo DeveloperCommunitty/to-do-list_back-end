@@ -22,12 +22,6 @@ export class TokenConfirmed {
 
 export class NewPassword {
   @ApiProperty({
-    example: '82704273-d483-423a-8302-9b5b8447568a',
-    description: 'Id do usuário',
-  })
-  @IsNotEmpty()
-  userId: string;
-  @ApiProperty({
     example: '68d5727b-a8ab-43ff-ba55-e151933286e9',
     description: 'Id da restauração',
   })

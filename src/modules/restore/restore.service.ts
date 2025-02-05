@@ -118,20 +118,10 @@ export class RestoreService {
   }
 
   async updatePassword(body: NewPassword) {
-    const userCheck = await this.prismaService.user.findUnique({
-      where: {
-        id: body.userId,
-      },
-    });
-
-    if (!userCheck)
-      throw new HttpException(`Usuário inexistente!`, HttpStatus.NOT_FOUND);
-
     const tokenCheck = await this.prismaService.restore.findUnique({
       where: {
         id: body.tokenId,
-        userId: body.userId,
-      },
+      }
     });
 
     if (tokenCheck.expirationAt.getTime() < new Date().getTime()) {
@@ -152,7 +142,7 @@ export class RestoreService {
 
     const userUpdate = await this.prismaService.user.update({
       where: {
-        id: body.userId,
+        id: tokenCheck.userId,
       },
       data: {
         password: hashPassword,
